@@ -122,10 +122,17 @@ class PositionalEncoding(nn.Module):
         return x     
     
 def get_data(batch_size, input_sequence_length, output_sequence_length):
-    i = input_sequence_length + output_sequence_length
     
-    t = torch.zeros(batch_size,1).uniform_(0,20 - i).int()
-    b = torch.arange(-10, -10 + i).unsqueeze(0).repeat(batch_size,1) + t
+    #print(input_sequence_length, output_sequence_length)
+    i = input_sequence_length + output_sequence_length
+    #print('i', i.dtype)
+    
+    #t = torch.zeros(batch_size,1).uniform_(0,20 - i).int()
+    t = torch.zeros(batch_size,1).uniform_(0,20 - i).float()
+    b = torch.arange(-10, -10 + i).unsqueeze(0).repeat(batch_size,1).float()
+    b = b + t
+    
+    print("t, b", t.dtype, b.dtype)
     
     s = torch.sigmoid(b.float())
     return s[:, :input_sequence_length].unsqueeze(-1), s[:,-output_sequence_length:]
